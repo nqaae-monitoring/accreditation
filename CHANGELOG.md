@@ -1,5 +1,11 @@
 # Oʻzgarishlar jurnali — Davlat akkreditatsiyasi monitoringi
 
+## 2026-10-19 — Atamalar (ru/en) va admin backend ulanishi
+
+### Oʻzgartirildi
+- Rasmiy atamalar tarjimasi butun platformada (interfeys, dashbord, hisobotlar, ovozli sharh, eksportlar) yagonalashtirildi: **Kompleks davlat akkreditatsiyasi** → ru «Институциональная аккредитация», en «Institutional Accreditation»; **Maxsus davlat akkreditatsiyasi** → ru «Программная аккредитация», en «Programme Accreditation» (hosila shakllari ham: институциональной/программной, institutional/programme). «Oʻrta maxsus taʼlim» va «Maxsus imkoniyatlar» oʻzgarmadi. Oʻzbekcha matn va hisob-kitoblar oʻzgarmagan.
+- `admin-config.js` Supabase loyihasiga ulandi (URL + publishable kalit); admin kirish ishga tushdi.
+
 ## 2026-10-17 — Admin panel va menyu koʻrinishini boshqarish (ACL)
 
 ### Qoʻshildi

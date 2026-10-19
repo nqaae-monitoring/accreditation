@@ -330,8 +330,8 @@ RP.VALID_T = {
   'inst.noOwn':{uc:'Мулкчилик шакли аниқланмаган ташкилотлар',ru:'Организации без формы собственности',en:'Institutions without ownership classification'},
   'inst.noEdu':{uc:'Таълим тури тоифаланмаган ташкилотлар',ru:'Организации с неопределённым видом образования',en:'Institutions with unclassified education type'},
   'inst.incomplete':{uc:'Ташкил этиш ва аккредитация санаси кўрсатилмаган ёзувлар',ru:'Записи без даты создания и аккредитации',en:'Records without establishment and accreditation dates'},
-  'k.dupId':{uc:'Комплекс аризаларда такрорланган рақам',ru:'Повторяющиеся номера комплексных заявок',en:'Duplicate comprehensive application numbers'},
-  'k.noDate':{uc:'Ариза берилган санаси йўқ комплекс аризалар',ru:'Комплексные заявки без даты подачи',en:'Comprehensive applications without a submission date'},
+  'k.dupId':{uc:'Комплекс аризаларда такрорланган рақам',ru:'Повторяющиеся номера институциональных заявок',en:'Duplicate institutional application numbers'},
+  'k.noDate':{uc:'Ариза берилган санаси йўқ комплекс аризалар',ru:'Институциональные заявки без даты подачи',en:'Institutional applications without a submission date'},
   'k.accBefore':{uc:'Қабул санаси ариза санасидан олдин бўлган ёзувлар',ru:'Дата принятия раньше даты подачи',en:'Acceptance date earlier than submission date'},
   'k.doneNoResult':{uc:'«Якунланган» ҳолатида натижаси кўрсатилмаган аризалар',ru:'Заявки «Завершено» без результата',en:'“Completed” applications without a result'},
   'k.resultNotDone':{uc:'Натижаси бор, лекин ҳолати якунланмаган аризалар',ru:'Заявки с результатом, но без статуса «Завершено»',en:'Applications with a result but not marked completed'},
@@ -339,7 +339,7 @@ RP.VALID_T = {
   'p.noField':{uc:'Билим соҳаси кўрсатилмаган дастурлар',ru:'Программы без области знаний',en:'Programmes without field of study'},
   'p.noOwn':{uc:'Мулкчилик шакли кўрсатилмаган дастурлар',ru:'Программы без формы собственности',en:'Programmes without ownership'},
   'a.countMismatch':{uc:'Ариза бўйича дастурлар сони мос келмайдиган ёзувлар',ru:'Несовпадение числа программ по заявке',en:'Programme count mismatch per application'},
-  'a.noDate':{uc:'Санаси йўқ махсус аризалар',ru:'Специальные заявки без даты',en:'Special applications without a date'},
+  'a.noDate':{uc:'Санаси йўқ махсус аризалар',ru:'Заявки программной аккредитации без даты',en:'Programme accreditation applications without a date'},
   'p.pctCheck':{uc:'Дастурлар ҳолатлари йиғиндиси жамига тенг эмас',ru:'Сумма статусов программ не равна итогу',en:'Programme status totals do not add up'}
 };
 
