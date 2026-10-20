@@ -137,9 +137,6 @@ function build(wrap){
     const tw = tip.offsetWidth, th = tip.offsetHeight;
     const ox = (r.px!=null) ? r.px : r.cx, oy = (r.py!=null) ? r.py : r.cy;   // belgi nuqtasi — markaziy shahar
     const gap = 34, px = ox*k, py = oy*k, Hpx = M.h*k;
-    // shahar nomi yozuvi — tooltip uni yopmasligi kerak
-    let lb = null; try{ const b = gC.querySelector(`text[data-id="${r.id}"]`).getBBox(); lb = {x:b.x*k, y:b.y*k, w:b.width*k, h:b.height*k}; }catch(e){}
-    const hitLabel = (x,y)=> !!lb && !(x+tw < lb.x-4 || x > lb.x+lb.w+4 || y+th < lb.y-4 || y > lb.y+lb.h+4);
     // tor ekran (telefon): yozuv xaritani yopmasin — xarita ostida statik blok, faqat nuqta belgilanadi
     if(W < 480){
       tip.classList.add('static'); tip.style.left = ''; tip.style.top = ''; tip.style.visibility = '';
@@ -149,20 +146,23 @@ function build(wrap){
       return;
     }
     tip.classList.remove('static');
-    const preferRight = r.cx < M.w*0.62;                 // sharqiy hududlar uchun chapga
-    const fitsR = px + gap + tw <= W, fitsL = px - gap - tw >= 0;
-    let mode; if(preferRight && fitsR) mode='R'; else if(!preferRight && fitsL) mode='L'; else if(fitsR) mode='R'; else if(fitsL) mode='L'; else mode='V';
-    let tx, ty;
-    if(mode==='R'){ tx = px + gap; ty = py - th/2; }
-    else if(mode==='L'){ tx = px - gap - tw; ty = py - th/2; }
-    else { tx = px - tw/2; ty = (py - gap - th >= 0) ? py - gap - th : py + gap; }   // tor ekran: ustida yoki ostida
-    if(mode!=='V' && hitLabel(tx,ty)){ const below = lb.y + lb.h + 8; ty = (below + th <= Hpx) ? below : lb.y - th - 8; }   // yozuvni yopmaslik: pastga yoki tepaga suramiz
-    tx = Math.max(0, Math.min(W - tw, tx)); ty = Math.max(0, Math.min(Hpx - th, ty));
+    // yozuv doimo xaritaning yuqori oʻng burchagidagi boʻsh joyda (xarita ustini yopmaydi)
+    const tx = Math.max(0, W - tw - 6), ty = 6;
     tip.style.left = tx + 'px'; tip.style.top = ty + 'px'; tip.style.visibility = '';
-    // yoʻnaltiruvchi chiziq: nuqtadan tooltip chetiga (tirsakli)
+    // yoʻnaltiruvchi tirsakli chiziq: shahar nuqtasidan yozuvgacha
+    const L = tx/k, R = (tx + tw)/k, B = (ty + th)/k, midY = (ty + th/2)/k, midX = (tx + tw/2)/k;
     let d;
-    if(mode==='V'){ const ax = (tx + tw/2)/k, above = ty + th <= py, ay = (above ? ty + th : ty)/k; d = `M${ox} ${oy}L${ax} ${ay}`; }
-    else { const rightSide = tx >= px; const ax = (rightSide ? tx : tx + tw)/k, ay = (ty + th/2)/k; const mx = rightSide ? ax - 10 : ax + 10; d = `M${ox} ${oy}L${mx} ${ay}L${ax} ${ay}`; }
+    if(ox < L - 6){
+      // shahar yozuvdan chapda: avval tepaga (yozuv oʻrtasi balandligigacha), soʻng oʻngga chap chetigacha
+      const ay = Math.min(midY, oy - 8);
+      d = `M${ox} ${oy}L${ox} ${ay}L${L} ${ay}`;
+    } else if(oy > B + 6){
+      // shahar yozuv ostida: avval yon tomonga (yozuv oʻrtasi), soʻng tepaga pastki chetigacha
+      const ax = Math.max(L + 10, Math.min(R - 10, ox));
+      d = (Math.abs(ax-ox) < 1) ? `M${ox} ${oy}L${ox} ${B}` : `M${ox} ${oy}L${ax} ${oy}L${ax} ${B}`;
+    } else {
+      d = `M${ox} ${oy}L${midX} ${B}`;
+    }
     lead.setAttribute('d', d);
     dot.setAttribute('cx', ox); dot.setAttribute('cy', oy); ring.setAttribute('cx', ox); ring.setAttribute('cy', oy);
     gM.classList.remove('on'); void gM.getBoundingClientRect(); gM.classList.add('on');
