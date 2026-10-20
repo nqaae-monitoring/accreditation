@@ -305,3 +305,33 @@ Object.assign(L10N, {
 "Tashqi baholash": ["Внешняя оценка","External evaluation"],
 "Akkreditatsiya natijasi": ["Результат аккредитации","Accreditation outcome"]
 });
+
+/* Oʻzbekiston xaritasi boʻlimi */
+Object.assign(L10N, {
+"Oʻzbekiston xaritasi": ["Карта Узбекистана","Map of Uzbekistan"],
+"Oʻzbekiston xaritasi boʻlimlari": ["Разделы карты Узбекистана","Map of Uzbekistan sections"],
+"Hududlar xaritasi": ["Карта регионов","Regional map"],
+"Hududlar jadvali": ["Таблица регионов","Regional table"],
+"Oʻzbekiston hududlari xaritasi": ["Карта регионов Узбекистана","Map of the regions of Uzbekistan"],
+"Oʻzbekiston hududlari boʻyicha taʼlim tashkilotlari": ["Образовательные организации по регионам Узбекистана","Educational institutions by region of Uzbekistan"],
+"Hududlar kesimida taʼlim tashkilotlari": ["Образовательные организации в разрезе регионов","Educational institutions by region"],
+"# ta hudud · kursorni hudud ustiga olib boring · birlik: tashkilot": ["# регионов · наведите курсор на регион · единица: организация","# regions · hover over a region · unit: institution"],
+"Taʼlim turlari boʻyicha · birlik: tashkilot": ["По типам образования · единица: организация","By education type · unit: institution"],
+"kursorni hudud ustiga olib boring": ["наведите курсор на регион","hover over a region"],
+"Jami taʼlim tashkilotlari": ["Всего образовательных организаций","Total educational institutions"],
+"Oliy taʼlimdan keyingi taʼlim": ["Послевузовское образование","Postgraduate education"],
+"Kadrlarni qayta tayyorlash va ularning malakasini oshirish": ["Переподготовка и повышение квалификации кадров","Staff retraining and professional development"],
+"Qoraqalpogʻiston": ["Каракалпакстан","Karakalpakstan"],
+"Xorazm": ["Хорезм","Khorezm"],
+"Navoiy": ["Навои","Navoi"],
+"Buxoro": ["Бухара","Bukhara"],
+"Samarqand": ["Самарканд","Samarkand"],
+"Qashqadaryo": ["Кашкадарья","Kashkadarya"],
+"Surxondaryo": ["Сурхандарья","Surkhandarya"],
+"Jizzax": ["Джизак","Jizzakh"],
+"Sirdaryo": ["Сырдарья","Syrdarya"],
+"Toshkent sh.": ["г. Ташкент","Tashkent city"],
+"Namangan": ["Наманган","Namangan"],
+"Andijon": ["Андижан","Andijan"],
+"Fargʻona": ["Фергана","Fergana"]
+});

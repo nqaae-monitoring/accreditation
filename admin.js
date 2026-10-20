@@ -40,11 +40,11 @@ function buildRegistry(){
       else if(n.dataset.level!==undefined){ const slug=(n.dataset.level||'all').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); add({id:`${mode}.lvl.${slug}`, parent:mode, type:'sub_tab', route:n.dataset.level, name:n.textContent.trim(), order:o++, el:n}); }
     });
     // navigatsiyada boʻlmagan boʻlim sarlavhalari ham boshqariladi
-    const panel=document.querySelector(({dashboard:'#modeDashboard',kompleks:'#modeKompleks',maxsus:'#modeMaxsus',xodim:'#modeXodim'})[mode]||'#none');
+    const panel=document.querySelector(({dashboard:'#modeDashboard',xarita:'#modeXarita',kompleks:'#modeKompleks',maxsus:'#modeMaxsus',xodim:'#modeXodim'})[mode]||'#none');
     if(panel) panel.querySelectorAll('.section-title[id]').forEach(st=>{ if(!REG.byId[st.id]) add({id:st.id, parent:mode, type:'section', route:st.id, name:st.textContent.trim(), order:o++, el:null}); });
   });
   // boʻlim bloklarini belgilash: section-title dan keyingi barcha elementlar keyingi sarlavhagacha
-  ['#modeDashboard','#modeKompleks','#modeMaxsus','#modeXodim'].forEach(sel=>{ const p=$(sel); if(!p) return; let cur=null; Array.from(p.children).forEach(ch=>{ if(ch.classList.contains('section-title')&&ch.id){ cur=ch.id; } if(cur) ch.setAttribute('data-sec',cur); }); });
+  ['#modeDashboard','#modeXarita','#modeKompleks','#modeMaxsus','#modeXodim'].forEach(sel=>{ const p=$(sel); if(!p) return; let cur=null; Array.from(p.children).forEach(ch=>{ if(ch.classList.contains('section-title')&&ch.id){ cur=ch.id; } if(cur) ch.setAttribute('data-sec',cur); }); });
 }
 
 /* ---------------- 2. Holat ---------------- */

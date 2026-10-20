@@ -1,5 +1,12 @@
 # Oʻzgarishlar jurnali — Davlat akkreditatsiyasi monitoringi
 
+## 2026-10-20 — «Oʻzbekiston xaritasi» boʻlimi
+
+### Qoʻshildi
+- Asosiy boʻlimlar roʻyxatida Dashboard'dan keyin **«Oʻzbekiston xaritasi»** (`uzmap.js`, `uz-map-data.js`): 14 hudud chegarasi (och koʻk hududlar, toʻq koʻk chegaralar, hudud nomlari). Kursor ustida hudud animatsiya bilan boʻrtib chiqadi, hudud markazida nuqta va yoʻnaltiruvchi chiziq paydo boʻladi, yozuvda jami taʼlim tashkilotlari soni hamda turlar boʻyicha (oliy taʼlim, oʻrta maxsus taʼlim, kasbiy taʼlim, kadrlarni qayta tayyorlash va malaka oshirish) sonlar chiqadi; nol qiymatli turlar koʻrsatilmaydi (reyestrda «oliy taʼlimdan keyingi taʼlim» turi hozircha yoʻq). Manba: `data-institutions.js` (1125 tashkilot), hudud nomlari apostrof variantlari bilan moslashtiriladi.
+- Ichki boʻlimlar: «Hududlar xaritasi» va «Hududlar jadvali» (turlar boʻyicha jadval). Klaviatura (Tab/Esc) va sensorli ekran qoʻllab-quvvatlanadi; harakatni kamaytirish rejimida animatsiya oʻchadi; tungi mavzu; uch tilda; ovozli qisqacha sharh; admin panelda boshqariladi (`xarita`, `msec-top`, `msec-table`).
+- Chegaralar manbasi: geoBoundaries (gbOpen, UZB ADM1, ODbL 1.0), soddalashtirilgan.
+
 ## 2026-10-19 — Atamalar (ru/en) va admin backend ulanishi
 
 ### Oʻzgartirildi

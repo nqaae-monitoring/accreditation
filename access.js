@@ -229,6 +229,14 @@ const SUMMARY = {
       `Динамика сотрудников: ${fN(S.length)} сотрудников, из них ${fN(S.filter(s=>s.hasMx).length)} в программной и ${fN(S.filter(s=>s.hasKx).length)} в институциональной аккредитации. Средний балл деятельности ${fP(avg)}. Отлично — ${fN(cat('alo'))}, стабильно — ${fN(cat('barqaror'))}, требует контроля — ${fN(cat('nazorat'))}, критическое состояние — ${fN(cat('kritik'))}. У ${fN(crit)} сотрудников есть критические задержки.${top?` Наивысший балл — ${top.name} (${fP(top.overall)}).`:''}`,
       `Staff performance dynamics: ${fN(S.length)} staff members, of whom ${fN(S.filter(s=>s.hasMx).length)} work in programme and ${fN(S.filter(s=>s.hasKx).length)} in institutional accreditation. The average performance score is ${fP(avg)}. Excellent — ${fN(cat('alo'))}, stable — ${fN(cat('barqaror'))}, needs attention — ${fN(cat('nazorat'))}, critical — ${fN(cat('kritik'))}. ${fN(crit)} staff members have critical delays.${top?` The highest score is held by ${top.name} (${fP(top.overall)}).`:''}`);
   },
+  xarita(){
+    if(!window.UZMAP || typeof UZMAP.compute!=='function') return '';
+    const D=UZMAP.compute(); if(!D) return ''; const list=Object.values(D.by).sort((a,b)=>b.total-a.total); const top=list[0], low=list[list.length-1];
+    const s=k=>list.reduce((a,c)=>a+(c[k]||0),0);
+    return pick(`Oʻzbekiston xaritasi: 14 ta hudud, jami ${fN(D.total)} ta taʼlim tashkiloti. Eng koʻpi — ${top.key} (${fN(top.total)}), eng kami — ${low.key} (${fN(low.total)}). Turlar boʻyicha: oliy taʼlim ${fN(s('oliy'))}, oʻrta maxsus ${fN(s('orta'))}, kasbiy taʼlim ${fN(s('kasb'))}, kadrlarni qayta tayyorlash va malaka oshirish ${fN(s('kadr'))}.`,
+      `Карта Узбекистана: 14 регионов, всего ${fN(D.total)} образовательных организаций. Больше всего — ${I18N.tr(top.key)} (${fN(top.total)}), меньше всего — ${I18N.tr(low.key)} (${fN(low.total)}). По типам: высшее образование ${fN(s('oliy'))}, среднее специальное ${fN(s('orta'))}, профессиональное ${fN(s('kasb'))}, переподготовка и повышение квалификации кадров ${fN(s('kadr'))}.`,
+      `Map of Uzbekistan: 14 regions, ${fN(D.total)} educational institutions in total. The most are in ${I18N.tr(top.key)} (${fN(top.total)}), the fewest in ${I18N.tr(low.key)} (${fN(low.total)}). By type: higher education ${fN(s('oliy'))}, specialised secondary ${fN(s('orta'))}, vocational ${fN(s('kasb'))}, staff retraining and professional development ${fN(s('kadr'))}.`);
+  },
   inst(){
     if(typeof dbCompute!=='function') return '';
     const D=(typeof _dbLast!=='undefined'&&_dbLast)?_dbLast:dbCompute(); const i=D.inst;
@@ -240,6 +248,7 @@ const SUMMARY = {
 window.SUMMARY = SUMMARY;
 const SUMMARY_ANCHORS = [
   {mode:'dashboard', sel:'#dsec-top', fn:'dashboard'},
+  {mode:'xarita', sel:'#msec-top', fn:'xarita'},
   {mode:'kompleks', sel:'#ksec-top', fn:'kompleks'},
   {mode:'maxsus', sel:'#sec-top', fn:'maxsus'},
   {mode:'xodim', sel:'#hsec-top', fn:'xodim'},

@@ -752,6 +752,16 @@ html.acl-admin .acl-closed:not(.acl-hidden){outline:2px dashed #f97316;outline-o
     <button class="nav-item" data-target="dsec-maxsus"><span class="nic"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20V2H6.5A2.5 2.5 0 004 4.5v15z"/></svg></span>Maxsus akkreditatsiya</button>
   </nav>
   </div>
+  <div class="mode-group" data-mode="xarita">
+  <button class="mode-btn" data-mode="xarita" role="tab" aria-selected="false">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg>
+    Oʻzbekiston xaritasi
+  </button>
+  <nav class="section-nav" id="sectionNavM" aria-label="Oʻzbekiston xaritasi boʻlimlari">
+    <button class="nav-item active" data-target="msec-top"><span class="nic"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg></span>Hududlar xaritasi</button>
+    <button class="nav-item" data-target="msec-table"><span class="nic"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></span>Hududlar jadvali</button>
+  </nav>
+  </div>
   <div class="mode-group" data-mode="tashkilot">
   <button class="mode-btn" data-mode="tashkilot" role="tab" aria-selected="false">
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 10h16M5 10v11M19 10v11M9 10v11M15 10v11M12 3 3 7.5h18L12 3Z"/></svg>
@@ -820,6 +830,21 @@ html.acl-admin .acl-closed:not(.acl-hidden){outline:2px dashed #f97316;outline-o
 </div>
 </aside>
 <main class="app-main" id="appMain">
+
+<!-- ============================================================
+     OʻZBEKISTON XARITASI — hududlar kesimida taʼlim tashkilotlari
+     (maʼlumot: data-institutions.js; chegaralar: uz-map-data.js; mantiq: uzmap.js)
+     ============================================================ -->
+<div id="modeXarita" style="display:none">
+  <div class="section-title" id="msec-top">Oʻzbekiston hududlari boʻyicha taʼlim tashkilotlari</div>
+  <div class="panel uzm-panel">
+    <div class="panel-head"><div><h3>Oʻzbekiston xaritasi</h3><div class="pdesc">14 ta hudud · kursorni hudud ustiga olib boring · birlik: tashkilot</div></div></div>
+    <div id="uzMapWrap" class="uzm-wrap"></div>
+  </div>
+  <div class="section-title" id="msec-table">Hududlar jadvali</div>
+  <div class="panel"><div class="panel-head"><div><h3>Hududlar kesimida taʼlim tashkilotlari</h3><div class="pdesc">Taʼlim turlari boʻyicha · birlik: tashkilot</div></div></div>
+    <div class="table-scroll" style="border:none"><table class="db-table" id="uzMapTable"></table></div></div>
+</div>
 
 <!-- ============================================================
      DASHBOARD — rahbariyat uchun yagona tahliliy panel
@@ -3203,7 +3228,7 @@ function kExportCSV(){
 function kRenderSection(){ kRenderKPI(); kRenderCharts(); kRenderTable(); }
 
 /* ============ 27. REJIMLARNI ALMASHTIRISH ============ */
-const MODE_PANELS = {dashboard:'#modeDashboard', maxsus:'#modeMaxsus', kompleks:'#modeKompleks', xodim:'#modeXodim', tashkilot:'#modeTashkilot', grafik:'#modeGrafik'};
+const MODE_PANELS = {dashboard:'#modeDashboard', xarita:'#modeXarita', maxsus:'#modeMaxsus', kompleks:'#modeKompleks', xodim:'#modeXodim', tashkilot:'#modeTashkilot', grafik:'#modeGrafik'};
 const EMBED_MODES = {tashkilot:'#frameTashkilot', grafik:'#frameGrafik'};
 const EMBED_VER = '20261017-2';   // institutional.html yangilanganda bu qiymatni oʻzgartiring (kesh yangilanadi)
 // embed iframe'lar: faqat birinchi ochilganda yuklanadi, mavzu asosiy platforma bilan sinxron
@@ -3246,6 +3271,7 @@ function switchMode(m){
   window.scrollTo({top:0,behavior:'auto'});
   if(EMBED_MODES[m]){ loadEmbed(m); return; }
   if(m==='dashboard'){ setTimeout(dbRender, 60); return; }
+  if(m==='xarita'){ setTimeout(()=>{ if(window.UZMAP) UZMAP.render(); }, 60); return; }
   setTimeout(()=>{
     Object.values(charts).forEach(c=>c&&c.resize());
     if(m==='kompleks') kRenderSection();
@@ -5473,6 +5499,7 @@ function init(){
   initSectionNav('sectionNavK');
   initSectionNav('sectionNavH');
   initSectionNav('sectionNavD');
+  initSectionNav('sectionNavM');
   initEmbedNavs();
   dbInit();
   initModeSwitch();
@@ -5585,17 +5612,20 @@ function initReveal(){
 document.addEventListener('DOMContentLoaded', ()=>setTimeout(initReveal, 0));
 </script>
 <!-- koʻp tillilik (uz / ru / en) va maxsus imkoniyatlar -->
-<script src="locales.js?v=20261019-1"></script>
+<script src="locales.js?v=20261020-1"></script>
 <script src="i18n.js?v=20261017-1"></script>
-<script src="access.js?v=20261019-1"></script>
+<script src="access.js?v=20261020-1"></script>
 <!-- avtomatlashtirilgan tahliliy hisobotlar (Word / PDF, namunaviy dizayn standarti) -->
 <script src="reports.js?v=20261019-1"></script>
 <script src="reports-text.js?v=20261019-1"></script>
 <!-- mobil / planshet moslashuvi (faqat ≤1023 px; desktop oʻzgarmaydi) -->
 <script src="mobile.js?v=20261017-1"></script>
+<!-- Oʻzbekiston xaritasi: hudud chegaralari + koʻrsatish mantigʻi -->
+<script src="uz-map-data.js?v=20261020-1"></script>
+<script src="uzmap.js?v=20261020-1"></script>
 <!-- admin panel va menyu koʻrinishi (ACL): sozlama → admin-config.js, sxema → supabase/schema.sql -->
 <script src="admin-config.js?v=20261017-2"></script>
 <script src="acl-core.js?v=20261017-1"></script>
-<script src="admin.js?v=20261017-1"></script>
+<script src="admin.js?v=20261020-1"></script>
 </body>
 </html>
