@@ -22,7 +22,11 @@ const CATS = [
   {k:'kadr', label:'Kadrlarni qayta tayyorlash va ularning malakasini oshirish', test:l=>/^kadrlarni qayta/.test(l)}
 ];
 // yorliq joylashuvi uchun qoʻlda tuzatishlar (SVG birligida)
-const LABEL_FIX = { 'UZ-TK':{dx:0, dy:-14, size:11}, 'UZ-TO':{dx:-30, dy:30}, 'UZ-AN':{size:12}, 'UZ-NG':{size:12}, 'UZ-FA':{size:12}, 'UZ-SI':{size:12, dy:6}, 'UZ-XO':{size:12} };
+// shahar nomi joylashuvi (standart: nuqta ostida, markazlashgan)
+const CITY_FIX = { 'UZ-TK':{dx:-8, dy:4, anchor:'end'}, 'UZ-TO':{dx:6, dy:18, anchor:'start'}, 'UZ-SU':{dy:-8} };
+// hudud nomi joylashuvi (markazdan siljish; shahar nomi bilan toʻqnashmasligi uchun)
+const LABEL_FIX = { 'UZ-TK':{dx:0, dy:-16, size:11}, 'UZ-TO':{dx:30, dy:-34}, 'UZ-AN':{size:12, dy:-14}, 'UZ-NG':{size:12, dx:-20, dy:-6}, 'UZ-FA':{size:12, dx:-18, dy:-8},
+  'UZ-SI':{size:12, dy:-14}, 'UZ-XO':{size:12, dy:-14}, 'UZ-QA':{dx:20, dy:-10}, 'UZ-SA':{dx:-14, dy:-6} };
 
 const CSS = `
 .uzm-wrap{position:relative;width:100%;max-width:1100px;margin:0 auto;user-select:none}
@@ -32,6 +36,10 @@ const CSS = `
   transition:transform .28s cubic-bezier(.2,.8,.2,1), fill .2s ease, filter .28s ease}
 .uzm-region.is-hover,.uzm-region:focus-visible{fill:#A9CFF7;stroke-width:1.8;transform:scale(1.045);filter:drop-shadow(0 8px 12px rgba(30,58,138,.35))}
 .uzm-label{font-family:var(--font,Inter,Arial,sans-serif);font-size:13px;font-weight:600;fill:#1E3A8A;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:rgba(255,255,255,.85);stroke-width:3px;stroke-linejoin:round}
+.uzm-city{fill:#1E3A8A;stroke:#fff;stroke-width:1.6;pointer-events:none}
+.uzm-city-label{font-family:var(--font,Inter,Arial,sans-serif);font-size:11px;font-weight:500;font-style:italic;fill:#1E3A8A;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:rgba(255,255,255,.9);stroke-width:3px;stroke-linejoin:round}
+.uzm-tip .r.city{margin-bottom:4px;padding-bottom:4px;border-bottom:1px dashed var(--border,#E4EAF2)}
+.uzm-tip .r.city b{color:var(--c-text,#172033);font-weight:600}
 .uzm-marker{pointer-events:none;opacity:0;transition:opacity .15s}
 .uzm-marker.on{opacity:1}
 .uzm-lead{fill:none;stroke:#1E3A8A;stroke-width:1.6;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .35s ease-out}
@@ -56,11 +64,13 @@ body.reduce-motion .uzm-ring{animation:none}
 [data-theme="dark"] .uzm-region,body.dark .uzm-region{fill:#2B4C7E;stroke:#9CC4F2}
 [data-theme="dark"] .uzm-region.is-hover,body.dark .uzm-region.is-hover{fill:#3B66A6}
 [data-theme="dark"] .uzm-label,body.dark .uzm-label{fill:#E7EDF6;stroke:rgba(14,23,38,.8)}
+[data-theme="dark"] .uzm-city-label,body.dark .uzm-city-label{fill:#CFE4FB;stroke:rgba(14,23,38,.8)}
+[data-theme="dark"] .uzm-city,body.dark .uzm-city{fill:#9CC4F2;stroke:#0E1726}
 [data-theme="dark"] .uzm-lead,[data-theme="dark"] .uzm-dot,[data-theme="dark"] .uzm-ring,body.dark .uzm-lead,body.dark .uzm-dot,body.dark .uzm-ring{stroke:#9CC4F2}
 [data-theme="dark"] .uzm-dot,body.dark .uzm-dot{fill:#9CC4F2;stroke:#0E1726}
 [data-theme="dark"] .uzm-tip,body.dark .uzm-tip{border-color:#9CC4F2}
 [data-theme="dark"] .uzm-tip .t,[data-theme="dark"] .uzm-tip .r b,body.dark .uzm-tip .t,body.dark .uzm-tip .r b{color:#9CC4F2}
-@media (max-width:767px){.uzm-label{font-size:18px;stroke-width:4px}.uzm-tip{min-width:190px;max-width:240px;font-size:12px}}
+@media (max-width:767px){.uzm-label{font-size:18px;stroke-width:4px}.uzm-city-label{font-size:15px;stroke-width:4px}.uzm-city{r:5}.uzm-tip{min-width:190px;max-width:240px;font-size:12px}}
 `;
 
 const UZMAP = { data:null, rendered:false };
@@ -96,7 +106,17 @@ function build(wrap){
     if(fx.size) t.setAttribute('font-size', fx.size);
     t.textContent = r.short; gL.appendChild(t);
   });
-  svg.appendChild(gR); svg.appendChild(gL); svg.appendChild(gM);
+  // markaziy shaharlar: nuqta + nom (geografik joylashuvi boʻyicha)
+  const gC = svgEl('g', {class:'uzm-cities'});
+  M.regions.forEach(r=>{
+    if(r.px==null) return;
+    const fx = CITY_FIX[r.id] || {};
+    gC.appendChild(svgEl('circle', {class:'uzm-city', cx:r.px, cy:r.py, r:'3.6', 'data-id':r.id}));
+    const t = svgEl('text', {x:r.px + (fx.dx||0), y:r.py + (fx.dy!=null ? fx.dy : 16), class:'uzm-city-label', 'data-id':r.id});
+    if(fx.anchor) t.setAttribute('text-anchor', fx.anchor);
+    t.textContent = r.city; gC.appendChild(t);
+  });
+  svg.appendChild(gR); svg.appendChild(gL); svg.appendChild(gC); svg.appendChild(gM);
   wrap.appendChild(svg); wrap.appendChild(tip);
 
   const legend = document.createElement('div'); legend.className = 'uzm-legend';
@@ -110,17 +130,21 @@ function build(wrap){
     active = p; p.classList.add('is-hover'); gR.appendChild(p);           // ustiga chizish
     // tooltip matni
     const rows = CATS.filter(k=>c[k.k]>0).map(k=>`<div class="r sub"><span>${TR(k.label)}</span><b>${NUM(c[k.k])}</b></div>`).join('');
-    tip.innerHTML = `<div class="t">${TR(r.key)}</div><div class="r total"><span>${TR('Jami taʼlim tashkilotlari')}</span><b>${NUM(c.total)}</b></div>${rows}`;
+    tip.innerHTML = `<div class="t">${TR(r.key)}</div>${r.city?`<div class="r sub city"><span>${TR('Markaziy shahar')}</span><b>${r.city}</b></div>`:''}<div class="r total"><span>${TR('Jami taʼlim tashkilotlari')}</span><b>${NUM(c.total)}</b></div>${rows}`;
     // joylashuv: SVG → piksel
     const W = wrap.clientWidth || 1, k = W / M.w;
     tip.style.visibility = 'hidden'; tip.classList.add('on');
     const tw = tip.offsetWidth, th = tip.offsetHeight;
-    const gap = 34, px = r.cx*k, py = r.cy*k, Hpx = M.h*k;
+    const ox = (r.px!=null) ? r.px : r.cx, oy = (r.py!=null) ? r.py : r.cy;   // belgi nuqtasi — markaziy shahar
+    const gap = 34, px = ox*k, py = oy*k, Hpx = M.h*k;
+    // shahar nomi yozuvi — tooltip uni yopmasligi kerak
+    let lb = null; try{ const b = gC.querySelector(`text[data-id="${r.id}"]`).getBBox(); lb = {x:b.x*k, y:b.y*k, w:b.width*k, h:b.height*k}; }catch(e){}
+    const hitLabel = (x,y)=> !!lb && !(x+tw < lb.x-4 || x > lb.x+lb.w+4 || y+th < lb.y-4 || y > lb.y+lb.h+4);
     // tor ekran (telefon): yozuv xaritani yopmasin — xarita ostida statik blok, faqat nuqta belgilanadi
     if(W < 480){
       tip.classList.add('static'); tip.style.left = ''; tip.style.top = ''; tip.style.visibility = '';
       lead.setAttribute('d', '');
-      dot.setAttribute('cx', r.cx); dot.setAttribute('cy', r.cy); ring.setAttribute('cx', r.cx); ring.setAttribute('cy', r.cy);
+      dot.setAttribute('cx', ox); dot.setAttribute('cy', oy); ring.setAttribute('cx', ox); ring.setAttribute('cy', oy);
       gM.classList.remove('on'); void gM.getBoundingClientRect(); gM.classList.add('on');
       return;
     }
@@ -132,14 +156,15 @@ function build(wrap){
     if(mode==='R'){ tx = px + gap; ty = py - th/2; }
     else if(mode==='L'){ tx = px - gap - tw; ty = py - th/2; }
     else { tx = px - tw/2; ty = (py - gap - th >= 0) ? py - gap - th : py + gap; }   // tor ekran: ustida yoki ostida
+    if(mode!=='V' && hitLabel(tx,ty)){ const below = lb.y + lb.h + 8; ty = (below + th <= Hpx) ? below : lb.y - th - 8; }   // yozuvni yopmaslik: pastga yoki tepaga suramiz
     tx = Math.max(0, Math.min(W - tw, tx)); ty = Math.max(0, Math.min(Hpx - th, ty));
     tip.style.left = tx + 'px'; tip.style.top = ty + 'px'; tip.style.visibility = '';
     // yoʻnaltiruvchi chiziq: nuqtadan tooltip chetiga (tirsakli)
     let d;
-    if(mode==='V'){ const ax = (tx + tw/2)/k, above = ty + th <= py, ay = (above ? ty + th : ty)/k; d = `M${r.cx} ${r.cy}L${ax} ${ay}`; }
-    else { const rightSide = tx >= px; const ax = (rightSide ? tx : tx + tw)/k, ay = (ty + th/2)/k; const mx = rightSide ? ax - 10 : ax + 10; d = `M${r.cx} ${r.cy}L${mx} ${ay}L${ax} ${ay}`; }
+    if(mode==='V'){ const ax = (tx + tw/2)/k, above = ty + th <= py, ay = (above ? ty + th : ty)/k; d = `M${ox} ${oy}L${ax} ${ay}`; }
+    else { const rightSide = tx >= px; const ax = (rightSide ? tx : tx + tw)/k, ay = (ty + th/2)/k; const mx = rightSide ? ax - 10 : ax + 10; d = `M${ox} ${oy}L${mx} ${ay}L${ax} ${ay}`; }
     lead.setAttribute('d', d);
-    dot.setAttribute('cx', r.cx); dot.setAttribute('cy', r.cy); ring.setAttribute('cx', r.cx); ring.setAttribute('cy', r.cy);
+    dot.setAttribute('cx', ox); dot.setAttribute('cy', oy); ring.setAttribute('cx', ox); ring.setAttribute('cy', oy);
     gM.classList.remove('on'); void gM.getBoundingClientRect(); gM.classList.add('on');
   };
   const hide = ()=>{ if(active){ active.classList.remove('is-hover'); active = null; } tip.classList.remove('on'); gM.classList.remove('on'); };

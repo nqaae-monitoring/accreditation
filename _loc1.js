@@ -335,3 +335,15 @@ Object.assign(L10N, {
 "Andijon": ["Андижан","Andijan"],
 "Fargʻona": ["Фергана","Fergana"]
 });
+
+/* Oʻzbekiston xaritasi — markaziy shaharlar */
+Object.assign(L10N, {
+"Markaziy shahar": ["Административный центр","Administrative centre"],
+"Nukus": ["Нукус","Nukus"],
+"Urganch": ["Ургенч","Urgench"],
+"Qarshi": ["Карши","Karshi"],
+"Guliston": ["Гулистан","Gulistan"],
+"Termiz": ["Термез","Termez"],
+"Nurafshon": ["Нурафшон","Nurafshon"],
+"Toshkent": ["Ташкент","Tashkent"]
+});
