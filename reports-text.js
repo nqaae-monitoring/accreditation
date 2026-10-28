@@ -36,7 +36,7 @@ function inPeriod(iso, f){ if(!iso) return !(f.from||f.to); if(f.from && iso<f.f
 RP.secs = part => part ? [part, part.replace(/1\.$/,'2.'), part.replace(/1\.$/,'3.')] : ['I.','II.','III.'];
 RP.calcInst = function(f){
   let rows = dbInst(f.ref);
-  if(f.edu) rows=rows.filter(r=>r.edu===f.edu);
+  if(f.edu) rows=rows.filter(r=>(r.edus||[r.edu]).includes(f.edu));
   if(f.region) rows=rows.filter(r=>r.region===f.region);
   if(f.own) rows=rows.filter(r=>r.own===f.own);
   if(f.lvl) rows=rows.filter(r=>String(r.lvlRaw||'').toLowerCase()===String(f.lvl).toLowerCase());

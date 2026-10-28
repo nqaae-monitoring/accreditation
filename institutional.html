@@ -835,7 +835,7 @@ body.embed .content{ padding-bottom:28px; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="data-institutions.js?v=20261015-3"></script>
+<script src="data-institutions.js?v=20261028-1"></script>
 <script>
 /* RAW_DATA — data-institutions.js faylidan yuklanadi (umumiy manba) */
 /* ==========================================================================
@@ -927,6 +927,8 @@ const DICT = {
 'f.region': ['Ҳудуд', 'Hudud', 'Регион', 'Region'],
 'f.level': ['Таълим даражаси', 'Ta’lim darajasi', 'Уровень образования', 'Education level'],
 'f.owner': ['Мулкчилик', 'Mulkchilik', 'Собственность', 'Ownership'],
+'f.type': ['Ташкилот тури', 'Tashkilot turi', 'Тип организации', 'Institution type'],
+'f.founder': ['Тасарруф этувчи', 'Tasarruf etuvchi', 'Ведомство', 'Founding body'],
 'f.status': ['Ҳолат', 'Holat', 'Статус', 'Status'],
 'f.year': ['Муддат йили', 'Muddat yili', 'Год срока', 'Deadline year'],
 'f.estyear': ['Ташкил этилган йил', 'Tashkil etilgan yil', 'Год создания', 'Establishment year'],
@@ -956,6 +958,9 @@ const DICT = {
 'c.orgs': ['ташкилот', 'tashkilot', 'организаций', 'organizations'],
 'c.region': ['Ҳудуд', 'Hudud', 'Регион', 'Region'],
 'c.owner': ['Мулкчилик', 'Mulkchilik', 'Собственность', 'Ownership'],
+'c.type': ['Ташкилот тури', 'Tashkilot turi', 'Тип организации', 'Institution type'],
+'c.founder': ['Тасарруф этувчи ташкилот', 'Tasarruf etuvchi tashkilot', 'Ведомство (учредитель)', 'Founding body'],
+'c.levels': ['Таълим даражалари', 'Ta’lim darajalari', 'Уровни образования', 'Education levels'],
 'c.level': ['Таълим даражаси', 'Ta’lim darajasi', 'Уровень образования', 'Education level'],
 'c.est': ['Ташкил этилган', 'Tashkil etilgan', 'Создана', 'Established'],
 'c.reorg': ['Қайта ташкил этилган', 'Qayta tashkil etilgan', 'Реорганизована', 'Reorganized'],
@@ -1478,6 +1483,11 @@ function normalizeRecord(src, idx) {
     accreditationDate: coerceDate(src.acc),
     certificateNumber: String(src.cert || '').trim(),
     applicationDate: coerceDate(src.app),
+    institutionType: String(src.type || '').trim(),
+    founder: String(src.founder || '').trim(),
+    levels: (Array.isArray(src.lvls) && src.lvls.length ? src.lvls : [src.lvl]).map(canonLevel).filter(Boolean),
+    applications: (src.apps && typeof src.apps === 'object') ? src.apps : null,
+    approxDates: Array.isArray(src.approx) ? src.approx : [],
     liquidated: !!src.liq,
     accreditationDeadline: null,
     certificateValidUntil: null,
@@ -1609,7 +1619,7 @@ function buildModel(srcRows) {
    ========================================================================== */
 const DEFAULT_FILTERS = () => ({
   regions: [], levels: [], owners: [], statuses: [], years: [],
-  estYears: [], reorg: null, cert: null, app: null, risks: []
+  estYears: [], reorg: null, cert: null, app: null, risks: [], types: [], founders: []
 });
 const STATE = {
   lang: 'uc',
@@ -1632,7 +1642,9 @@ let SRC_ROWS = [];
 /* ---------- filtering ---------- */
 function passesFilters(r, f, q) {
   if (f.regions.length && f.regions.indexOf(r.region) < 0) return false;
-  if (f.levels.length && f.levels.indexOf(r.educationLevel) < 0) return false;
+  if (f.levels.length && !r.levels.some(l => f.levels.indexOf(l) >= 0)) return false;   // tashkilot tanlangan darajalardan birida taʼlim bersa
+  if (f.types.length && f.types.indexOf(r.institutionType) < 0) return false;
+  if (f.founders.length && f.founders.indexOf(r.founder) < 0) return false;
   if (f.owners.length && f.owners.indexOf(r.ownershipType) < 0) return false;
   if (f.statuses.length && f.statuses.indexOf(r.accreditationStatus) < 0) return false;
   if (f.risks.length && f.risks.indexOf(r.riskBand) < 0) return false;
@@ -1657,7 +1669,7 @@ function filtered() {
 }
 function activeFilterCount() {
   const f = STATE.filters;
-  return f.regions.length + f.levels.length + f.owners.length + f.statuses.length +
+  return f.regions.length + f.levels.length + f.owners.length + f.statuses.length + f.types.length + f.founders.length +
     f.years.length + f.estYears.length + f.risks.length +
     (f.reorg ? 1 : 0) + (f.cert ? 1 : 0) + (f.app ? 1 : 0) + (STATE.search.trim() ? 1 : 0);
 }
@@ -1872,7 +1884,9 @@ function msOptions(key) {
   const rows = MODEL.rows;
   const count = fn => { const m = new Map(); rows.forEach(r => { const v = fn(r); if (v != null) m.set(v, (m.get(v) || 0) + 1); }); return m; };
   if (key === 'regions') { const m = count(r => r.region); return REGION_ORDER.filter(x => m.has(x)).concat(Array.from(m.keys()).filter(x => REGION_ORDER.indexOf(x) < 0)).map(v => ({ v, label: tRegion(v), n: m.get(v) })); }
-  if (key === 'levels') { const m = count(r => r.educationLevel); return LEVEL_ORDER.filter(x => m.has(x)).concat(Array.from(m.keys()).filter(x => LEVEL_ORDER.indexOf(x) < 0)).map(v => ({ v, label: tLevel(v), n: m.get(v) })); }
+  if (key === 'types') { const m = count(r => r.institutionType || null); return Array.from(m.entries()).sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ v, label: v, n })); }
+  if (key === 'founders') { const m = count(r => r.founder || null); return Array.from(m.entries()).sort((a, b) => b[1] - a[1]).map(([v, n]) => ({ v, label: v, n })); }
+  if (key === 'levels') { const m = new Map(); rows.forEach(r => r.levels.forEach(v => m.set(v, (m.get(v) || 0) + 1))); return LEVEL_ORDER.filter(x => m.has(x)).concat(Array.from(m.keys()).filter(x => LEVEL_ORDER.indexOf(x) < 0)).map(v => ({ v, label: tLevel(v), n: m.get(v) })); }
   if (key === 'owners') { const m = count(r => r.ownershipType); return OWNER_ORDER.filter(x => m.has(x)).concat(Array.from(m.keys()).filter(x => OWNER_ORDER.indexOf(x) < 0)).map(v => ({ v, label: tOwner(v), n: m.get(v) })); }
   if (key === 'statuses') { const m = count(r => r.accreditationStatus); return STATUS_ORDER.map(v => ({ v, label: t('st.' + v), n: m.get(v) || 0 })); }
   if (key === 'risks') { const m = count(r => r.riskBand); return ['high', 'med', 'low'].map(v => ({ v, label: t('risk.' + v), n: m.get(v) || 0 })); }
@@ -1944,6 +1958,8 @@ function renderFilters() {
   bar.appendChild(buildMultiSelect('regions', 'f.region'));
   bar.appendChild(buildMultiSelect('levels', 'f.level'));
   bar.appendChild(buildMultiSelect('owners', 'f.owner'));
+  bar.appendChild(buildMultiSelect('types', 'f.type'));
+  bar.appendChild(buildMultiSelect('founders', 'f.founder'));
   bar.appendChild(buildMultiSelect('statuses', 'f.status'));
   bar.appendChild(buildMultiSelect('years', 'f.year'));
   bar.appendChild(buildMultiSelect('risks', 'f.risk'));
@@ -2055,7 +2071,9 @@ function openOrg(id) {
   s3.appendChild(dl([
     [t('c.region'), tRegion(r.region), false],
     [t('c.owner'), tOwner(r.ownershipType), false],
-    [t('c.level'), tLevel(r.educationLevel), false],
+    [t('c.type'), r.institutionType || '—', false],
+    [t('c.founder'), r.founder || '—', false],
+    [t('c.levels'), r.levels.map(tLevel).join(' · '), false],
     [t('c.est'), fmtDate(r.establishmentDate), true],
     [t('c.reorg'), fmtDate(r.reorganizationDate), true]
   ]));
@@ -2426,7 +2444,10 @@ const COLS = [
   /* hudud boʻyicha saralash — buyurtmachi belgilagan ketma-ketlik (TL_REGION_ORDER), hudud ichida T/r boʻyicha */
   { k: 'region', label: () => t('c.region'), get: r => tRegionShort(r.region), sort: r => { const i = TL_REGION_ORDER.indexOf(r.region); return String(i < 0 ? 99 : i).padStart(2, '0') + '-' + String(r.id).padStart(6, '0'); } },
   { k: 'owner', label: () => t('c.owner'), get: r => tOwner(r.ownershipType), sort: r => tOwner(r.ownershipType) },
+  { k: 'type', label: () => t('c.type'), get: r => r.institutionType || '—', sort: r => r.institutionType || '' },
+  { k: 'founder', label: () => t('c.founder'), get: r => r.founder || '—', sort: r => r.founder || '' },
   { k: 'level', label: () => t('c.level'), get: r => tLevel(r.educationLevel), sort: r => tLevel(r.educationLevel) },
+  { k: 'levels', label: () => t('c.levels'), get: r => r.levels.map(tLevel).join(' · '), sort: r => r.levels.length },
   { k: 'est', label: () => t('c.est'), cls: 'mono', get: r => fmtDate(r.establishmentDate), sort: r => r.establishmentDate || '' },
   { k: 'reorg', label: () => t('c.reorg'), cls: 'mono', get: r => fmtDate(r.reorganizationDate), sort: r => r.reorganizationDate || '' },
   { k: 'acc', label: () => t('c.acc'), cls: 'mono', get: r => fmtDate(r.accreditationDate), sort: r => r.accreditationDate || '' },
@@ -2437,7 +2458,7 @@ const COLS = [
   { k: 'risk', label: () => t('c.risk'), cls: 'num', get: r => r.riskScore, sort: r => r.riskScore, html: r => `<span class="tag risk-${r.riskBand}">${r.riskScore}</span>` },
   { k: 'status', label: () => t('c.status'), get: r => t('st.' + r.accreditationStatus), sort: r => STATUS_ORDER.indexOf(r.accreditationStatus), html: r => statusPill(r.accreditationStatus), fixed: true }
 ];
-const DEFAULT_COLS = ['n', 'name', 'region', 'owner', 'level', 'est', 'reorg', 'acc', 'cert', 'deadline', 'left', 'app', 'status'];
+const DEFAULT_COLS = ['n', 'name', 'region', 'owner', 'type', 'level', 'est', 'reorg', 'acc', 'cert', 'deadline', 'left', 'app', 'status'];
 
 function visibleCols() {
   if (!STATE.table.cols) STATE.table.cols = DEFAULT_COLS.slice();
@@ -3954,12 +3975,12 @@ function restoreOriginal() {
 function exportRows() {
   const rows = sortRows(filtered(), STATE.table.sort, STATE.table.dir);
   const head = [
-    'T/r', t('c.org'), t('c.region'), t('c.owner'), t('c.level'), t('c.est'), t('c.reorg'),
+    'T/r', t('c.org'), t('c.region'), t('c.owner'), t('c.type'), t('c.founder'), t('c.level'), t('c.levels'), t('c.est'), t('c.reorg'),
     t('c.acc'), t('c.certno'), t('c.certtill'), t('c.deadline2'), t('c.basis'),
     t('c.daysLeft'), t('c.left'), t('c.app'), t('c.risk'), t('c.status')
   ];
   const body = rows.map((r, i) => [
-    i + 1, r.organizationName, tRegion(r.region), tOwner(r.ownershipType), tLevel(r.educationLevel),
+    i + 1, r.organizationName, tRegion(r.region), tOwner(r.ownershipType), r.institutionType || '', r.founder || '', tLevel(r.educationLevel), r.levels.map(tLevel).join('; '),
     fmtDate(r.establishmentDate), fmtDate(r.reorganizationDate), fmtDate(r.accreditationDate),
     r.certificateNumber || '', fmtDate(r.certificateValidUntil), fmtDate(r.accreditationDeadline),
     t('basis.' + r.deadlineBasis), r.daysRemaining == null ? '' : r.daysRemaining, remainText(r),

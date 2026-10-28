@@ -1,6 +1,6 @@
 # Davlat akkreditatsiyasi monitoringi
 
-Davlat akkreditatsiyasi holati boʻyicha interaktiv dashbord (16.10.2026 holatiga).
+Davlat akkreditatsiyasi holati boʻyicha interaktiv dashbord (reyestr 27.10.2026, akkreditatsiya maʼlumotlari 16.10.2026 holatiga).
 
 Veb sahifa: https://nqaae-monitoring.github.io/accreditation/
 

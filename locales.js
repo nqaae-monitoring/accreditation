@@ -348,6 +348,38 @@ Object.assign(L10N, {
 "Nurafshon": ["Нурафшон","Nurafshon"],
 "Toshkent": ["Ташкент","Tashkent"]
 });
+
+/* Reyestr 27.10.2026: tashkilot turi, tasarruf etuvchi, oliy taʼlimdan keyingi taʼlim */
+Object.assign(L10N, {
+"Oliy taʼlimdan keyingi taʼlim tashkilotlari": ["Организации послевузовского образования","Postgraduate education institutions"],
+"Tashkilot turi boʻyicha": ["По типу организации","By institution type"],
+"Reyestrdagi tashkilot turi · soni va ulushi": ["Тип организации по реестру · количество и доля","Institution type per the register · count and share"],
+"Tasarruf etuvchi tashkilotlar kesimida": ["В разрезе ведомств (учредителей)","By founding body"],
+"Eng koʻp tashkilotga ega # ta vazirlik va idora · birlik: tashkilot": ["# министерств и ведомств с наибольшим числом организаций · единица: организация","# ministries and agencies with the most institutions · unit: institution"],
+"Kasbiy ta'lim tashkiloti": ["Организация профессионального образования","Vocational education institution"],
+"Oliy ta'lim tashkiloti": ["Организация высшего образования","Higher education institution"],
+"Ilmiy-tadqiqot tashkiloti": ["Научно-исследовательская организация","Research institution"],
+"O'rta maxsus ta'lim tashkiloti": ["Организация среднего специального образования","Specialised secondary education institution"],
+"Markaz": ["Центр","Centre"],
+"Institut": ["Институт","Institute"],
+"Filial": ["Филиал","Branch"],
+"Ustaxona": ["Мастерская","Workshop"],
+"Oliy maktab": ["Высшая школа","Higher school"],
+"Unitar korxona": ["Унитарное предприятие","Unitary enterprise"],
+"Akademiya": ["Академия","Academy"],
+"Kasbiy taʼlim agentligi": ["Агентство профессионального образования","Agency for Vocational Education"],
+"Ta'lim va ilm-fan vazirligi": ["Министерство образования и науки","Ministry of Education and Science"],
+"Xususiy": ["Частная","Private"],
+"Sogʻliqni saqlash vazirligi": ["Министерство здравоохранения","Ministry of Health"],
+"Fanlar akademiyasi": ["Академия наук","Academy of Sciences"],
+"Qishloq xoʻjaligi vazirligi": ["Министерство сельского хозяйства","Ministry of Agriculture"],
+"Ichki ishlar vazirligi": ["Министерство внутренних дел","Ministry of Internal Affairs"],
+"Madaniyat vazirligi": ["Министерство культуры","Ministry of Culture"],
+"Veterinariya va chorvachilikni rivojlantirish qoʻmitasi": ["Комитет ветеринарии и развития животноводства","Committee for Veterinary and Livestock Development"],
+"Adliya vazirligi": ["Министерство юстиции","Ministry of Justice"],
+"Togʻ-kon sanoati va geologiya vazirligi": ["Министерство горнодобывающей промышленности и геологии","Ministry of Mining Industry and Geology"]
+});
+
 /* NQAAE monitoring — tarjima lugʻati, 2-qism (Kompleks, Xodimlar, modal oynalar) */
 Object.assign(L10N, {
 "Kutish muddati": ["Срок ожидания","Waiting time"],

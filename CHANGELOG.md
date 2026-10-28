@@ -1,5 +1,18 @@
 # Oʻzgarishlar jurnali — Davlat akkreditatsiyasi monitoringi
 
+## 2026-10-28 — Taʼlim tashkilotlari reyestri 27.10.2026 holatiga yangilandi
+
+### Oʻzgartirildi
+- `data-institutions.js` «Таълим ташкилотлари 27.10.2026.xlsx» asosida toʻliq qayta shakllantirildi: 1 242 ta tashkilot (avval 1 125). Yangi maydonlar: `type` (tashkilot turi: oliy/kasbiy/oʻrta maxsus taʼlim tashkiloti, ilmiy-tadqiqot tashkiloti, markaz, institut va b.), `founder` (tasarruf etuvchi vazirlik/idora, 100 ta), `lvls` (tashkilot taʼlim beradigan barcha darajalar — 136 ta tashkilotda bir nechta daraja), `apps` (har bir daraja boʻyicha ariza sanasi), `approx` (faqat yili koʻrsatilgan sanalar, 36 ta — 1-yanvar deb olinadi). `lvl` — asosiy daraja (oliy → oʻrta maxsus → kasbiy → oliy taʼlimdan keyingi → kadrlar malakasi), `app` — eng erta ariza sanasi; shuning uchun mavjud hisob-kitoblar oʻzgarmadi.
+- Reyestrga ilk bor **oliy taʼlimdan keyingi taʼlim** (259 ta tashkilot, shundan 129 tasi faqat shu darajada — asosan ilmiy-tadqiqot institutlari) kiritildi; «Taʼlim tashkilotlari» va «Akkreditatsiya grafigi» boʻlimlarida shu daraja uchun alohida ichki boʻlim qoʻshildi.
+- Taʼlim turi boʻyicha filtrlar (Dashboard, reyestr, hisobotlar) endi tashkilotning barcha darajalarini hisobga oladi; «Oʻzbekiston xaritasi» yozuvida darajalar boʻyicha sonlar ham barcha darajalar boʻyicha (jami — noyob tashkilotlar).
+- Reyestr sahifasida (`institutional.html`): «Tashkilot turi» va «Tasarruf etuvchi» filtrlari, jadvalda «Tashkilot turi» ustuni (qoʻshimcha: «Tasarruf etuvchi tashkilot», «Taʼlim darajalari»), tashkilot kartochkasida va Excel/CSV eksportida yangi maydonlar.
+- Dashboard «Taʼlim tashkilotlari tahlili» boʻlimiga ikkita yangi diagramma: «Tashkilot turi boʻyicha» va «Tasarruf etuvchi tashkilotlar kesimida» (eng koʻp 12 tasi).
+
+### Eslatma
+- 2025-yil oktabrida qayta tashkil etilgan ~550 kasbiy taʼlim muassasasining 2 yillik muddati 2027-yil oktabrida tugaydi; 2026-yil 27-oktabrdan boshlab ular «muddati yaqin» (1 yil ichida) holatiga oʻtdi — bu sana effekti, maʼlumot xatosi emas.
+- Reyestrda 111 ta tashkilotda (asosan yangi kiritilgan ilmiy-tadqiqot tashkilotlari) sana maʼlumotlari yoʻq — ular «Maʼlumot yetarli emas» holatida.
+
 ## 2026-10-20 — «Oʻzbekiston xaritasi» boʻlimi
 
 ### Qoʻshildi

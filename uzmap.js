@@ -81,8 +81,8 @@ function compute(){
   const by = {}; const keyOf = {};
   M.regions.forEach(r=>{ by[r.id] = {id:r.id, key:r.key, short:r.short, total:0}; CATS.forEach(c=>by[r.id][c.k]=0); keyOf[norm(r.key)] = r.id; });
   let unmatched = 0;
-  rows.forEach(o=>{ const id = keyOf[norm(o.region)]; if(!id){ unmatched++; return; } const b = by[id]; b.total++; const l = norm(o.lvl); const c = CATS.find(c=>c.test(l)); if(c) b[c.k]++; });
-  return {by, total: rows.length - unmatched, unmatched};
+  rows.forEach(o=>{ if(o.liq) return; const id = keyOf[norm(o.region)]; if(!id){ unmatched++; return; } const b = by[id]; b.total++; (Array.isArray(o.lvls)&&o.lvls.length?o.lvls:[o.lvl]).forEach(lv=>{ const l = norm(lv); const c = CATS.find(c=>c.test(l)); if(c) b[c.k]++; }); });
+  return {by, total: rows.filter(o=>!o.liq).length - unmatched, unmatched};
 }
 
 function svgEl(tag, attrs){ const e = document.createElementNS('http://www.w3.org/2000/svg', tag); if(attrs) Object.keys(attrs).forEach(k=>e.setAttribute(k, attrs[k])); return e; }
