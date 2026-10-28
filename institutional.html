@@ -835,7 +835,7 @@ body.embed .content{ padding-bottom:28px; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="data-institutions.js?v=20261028-1"></script>
+<script src="data-institutions.js?v=20261028-2"></script>
 <script>
 /* RAW_DATA — data-institutions.js faylidan yuklanadi (umumiy manba) */
 /* ==========================================================================
@@ -1021,6 +1021,8 @@ const DICT = {
 'ch.mapNote2': ['Квантил шкала: 14 ҳудуд ранг бўйича тенг гуруҳларга тақсимланган', 'Kvantil shkala: 14 hudud rang bo‘yicha teng guruhlarga taqsimlangan', 'Квантильная шкала: регионы распределены по цвету равными группами', 'Quantile scale: regions are split into equal colour groups'],
 'ch.byOwner': ['Мулкчилик шакли бўйича', 'Mulkchilik shakli bo‘yicha', 'По форме собственности', 'By ownership'],
 'ch.byLevel': ['Таълим даражаси бўйича', 'Ta’lim darajasi bo‘yicha', 'По уровню образования', 'By education level'],
+'ch.multiLevel': ['Бир нечта таълим даражасида ўқитадиган ташкилотлар', 'Bir nechta ta’lim darajasida o‘qitadigan tashkilotlar', 'Организации, обучающие на нескольких уровнях', 'Institutions teaching at several levels'],
+'ch.multiLevelHint': ['даражалар комбинацияси ва аккредитация ҳолати', 'darajalar kombinatsiyasi va akkreditatsiya holati', 'комбинации уровней и статус аккредитации', 'level combinations and accreditation status'],
 'ch.byMonth': ['Ойлар бўйича аккредитация муддатлари', 'Oylar bo‘yicha akkreditatsiya muddatlari', 'Сроки аккредитации по месяцам', 'Deadlines by month'],
 'ch.workload': ['Йиллар бўйича иш ҳажми', 'Yillar bo‘yicha ish hajmi', 'Нагрузка по годам', 'Workload by year'],
 'ch.heatmap': ['Иш ҳажми иссиқлик картаси (йил × ой)', 'Ish hajmi issiqlik kartasi (yil × oy)', 'Тепловая карта нагрузки (год × месяц)', 'Workload heatmap (year × month)'],
@@ -2458,7 +2460,7 @@ const COLS = [
   { k: 'risk', label: () => t('c.risk'), cls: 'num', get: r => r.riskScore, sort: r => r.riskScore, html: r => `<span class="tag risk-${r.riskBand}">${r.riskScore}</span>` },
   { k: 'status', label: () => t('c.status'), get: r => t('st.' + r.accreditationStatus), sort: r => STATUS_ORDER.indexOf(r.accreditationStatus), html: r => statusPill(r.accreditationStatus), fixed: true }
 ];
-const DEFAULT_COLS = ['n', 'name', 'region', 'owner', 'type', 'level', 'est', 'reorg', 'acc', 'cert', 'deadline', 'left', 'app', 'status'];
+const DEFAULT_COLS = ['n', 'name', 'region', 'owner', 'type', 'levels', 'est', 'reorg', 'acc', 'cert', 'deadline', 'left', 'app', 'status'];
 
 function visibleCols() {
   if (!STATE.table.cols) STATE.table.cols = DEFAULT_COLS.slice();
@@ -2914,6 +2916,20 @@ function viewLevels(root) {
       (c, s) => { STATE.filters.levels = [c.key]; STATE.filters.statuses = [s]; renderFilters(); go('orgs'); }, false, 'h280');
   }));
   root.appendChild(g2);
+
+  /* bir nechta darajada oʻqitadigan tashkilotlar — kombinatsiyalar boʻyicha */
+  const multi = rows.filter(r => r.levels.length > 1);
+  if (multi.length) {
+    root.appendChild(card(t('ch.multiLevel'), nf(multi.length) + ' ' + t('c.orgs') + ' · ' + t('ch.multiLevelHint'), b => {
+      const m2 = groupBy(multi, r => r.levels.map(tLevel).join(' + '));
+      const ks = Array.from(m2.keys()).sort((a, b2) => m2.get(b2).length - m2.get(a).length);
+      const table = el('table', { class: 'tbl' });
+      table.innerHTML = `<thead><tr><th>${esc(t('c.levels'))}</th><th class="num">${esc(t('c.total'))}</th>` + STATUS_ORDER.filter(s => s !== 'closed').map(s => `<th class="num">${esc(t('st.' + s))}</th>`).join('') + `</tr></thead>`;
+      const tb = el('tbody');
+      ks.forEach(k => { const list = m2.get(k), tl = tally(list); const tr = el('tr'); tr.innerHTML = `<td>${esc(k)}</td><td class="num"><b>${nf(list.length)}</b></td>` + STATUS_ORDER.filter(s => s !== 'closed').map(s => `<td class="num">${tl[s] ? nf(tl[s]) : ''}</td>`).join(''); tb.appendChild(tr); });
+      table.appendChild(tb); b.appendChild(table);
+    }));
+  }
 
   keys.forEach(k => {
     const list = m.get(k), tl = tally(list);

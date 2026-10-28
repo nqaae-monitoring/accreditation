@@ -379,3 +379,18 @@ Object.assign(L10N, {
 "Togʻ-kon sanoati va geologiya vazirligi": ["Министерство горнодобывающей промышленности и геологии","Ministry of Mining Industry and Geology"]
 });
 
+/* Koʻp darajali tashkilotlar (Dashboard) */
+Object.assign(L10N, {
+"Bir nechta taʼlim darajasida oʻqitadigan tashkilotlar": ["Организации, обучающие на нескольких уровнях образования","Institutions teaching at several education levels"],
+"Darajalar kombinatsiyasi boʻyicha · birlik: tashkilot": ["По комбинациям уровней · единица: организация","By level combination · unit: institution"],
+"Tashkilotdagi taʼlim darajalari soni": ["Число уровней образования в организации","Number of education levels per institution"],
+"Bitta, ikkita yoki uchta darajada oʻqitadigan tashkilotlar ulushi": ["Доля организаций с одним, двумя или тремя уровнями","Share of institutions with one, two or three levels"],
+"# ta daraja": ["# уровень(я)","# level(s)"],
+"Oliy + Oliydan keyingi": ["Высшее + послевузовское","Higher + postgraduate"],
+"Oliy + Oliydan keyingi + Kadrlar malakasi": ["Высшее + послевузовское + повышение квалификации","Higher + postgraduate + staff development"],
+"Oliydan keyingi + Kadrlar malakasi": ["Послевузовское + повышение квалификации","Postgraduate + staff development"],
+"Oliy + Kadrlar malakasi": ["Высшее + повышение квалификации","Higher + staff development"],
+"Kasbiy + Kadrlar malakasi": ["Профессиональное + повышение квалификации","Vocational + staff development"],
+"Yopiq taʼlim tashkiloti (T/r #)": ["Закрытая образовательная организация (№ #)","Restricted educational institution (No. #)"]
+});
+

@@ -9,6 +9,9 @@
 - Reyestr sahifasida (`institutional.html`): «Tashkilot turi» va «Tasarruf etuvchi» filtrlari, jadvalda «Tashkilot turi» ustuni (qoʻshimcha: «Tasarruf etuvchi tashkilot», «Taʼlim darajalari»), tashkilot kartochkasida va Excel/CSV eksportida yangi maydonlar.
 - Dashboard «Taʼlim tashkilotlari tahlili» boʻlimiga ikkita yangi diagramma: «Tashkilot turi boʻyicha» va «Tasarruf etuvchi tashkilotlar kesimida» (eng koʻp 12 tasi).
 
+- Koʻp darajali tashkilotlar koʻrsatiladi: Dashboardda «Bir nechta taʼlim darajasida oʻqitadigan tashkilotlar» (darajalar kombinatsiyasi) va «Tashkilotdagi taʼlim darajalari soni» diagrammalari; reyestr jadvalida standart ustun endi «Taʼlim darajalari» (barchasi), «Taʼlim darajalari» koʻrinishida kombinatsiyalar va holat jadvali.
+- Buyurtmachi koʻrsatmasi boʻyicha 22 ta harbiy va huquqni muhofaza qiluvchi idoralar tasarrufidagi tashkilotning nomi platformada koʻrsatilmaydi: ular barcha svod sonlarda hisobga olinadi, lekin reyestr, kartochka, jadval, eksport, hisobot va boshqa bazalarda «Yopiq taʼlim tashkiloti (T/r N)» yorligʻi bilan beriladi (`conf` maydoni; kompleks/maxsus bazalaridagi mos yozuv ham shu yorliqqa oʻtkazildi).
+
 ### Eslatma
 - 2025-yil oktabrida qayta tashkil etilgan ~550 kasbiy taʼlim muassasasining 2 yillik muddati 2027-yil oktabrida tugaydi; 2026-yil 27-oktabrdan boshlab ular «muddati yaqin» (1 yil ichida) holatiga oʻtdi — bu sana effekti, maʼlumot xatosi emas.
 - Reyestrda 111 ta tashkilotda (asosan yangi kiritilgan ilmiy-tadqiqot tashkilotlari) sana maʼlumotlari yoʻq — ular «Maʼlumot yetarli emas» holatida.
